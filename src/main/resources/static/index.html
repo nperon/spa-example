@@ -38,8 +38,8 @@
         function getAuthCode() {
             var state = document.getElementById("stateValue").innerHTML;
             var codeChallenge = document.getElementById("codeChallengeValue").innerHTML;
-            var authorizationURL = "http://localhost:8080/auth/realms/appsdeveloperblog/protocol/openid-connect/auth";
-            authorizationURL += "?client_id=photo-app-PKCE-client";
+            var authorizationURL = "http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/auth";
+            authorizationURL += "?client_id=pkce-client";
             authorizationURL += "&response_type=code";
             authorizationURL += "&scope=openid";
             authorizationURL += "&redirect_uri=http://localhost:8181/authcodeReader.html";
@@ -60,7 +60,7 @@
             var codeVerifier = document.getElementById("codeVerifierValue").innerHTML;
             var data = {
                 "grant_type": "authorization_code",
-                "client_id": "photo-app-PKCE-client",
+                "client_id": "pkce-client",
                 "code": authCode,
                 "code_verifier": codeVerifier,
                 "redirect_uri":"http://localhost:8181/authcodeReader.html"
@@ -70,7 +70,7 @@
                     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
                 },
                 type: "POST",
-                url: "http://localhost:8080/auth/realms/appsdeveloperblog/protocol/openid-connect/token",
+                url: "http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token",
                 data: data,
                 success: postRequestAccessToken,
                 dataType: "json"
@@ -80,36 +80,21 @@
             document.getElementById("accessToken").innerHTML = data["access_token"];
         }
         function getInfoFromResourceServer(){
+            var endPoint = document.getElementById("endPointInput").value;
             var accessToken = document.getElementById("accessToken").innerHTML;
             $.ajax({
                 beforeSend: function (request) {
-                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+                    request.setRequestHeader("Content-type", "application/json; charset=UTF-8");
                     request.setRequestHeader("Authorization", "Bearer " + accessToken);
                 },
                 type: "GET",
-                url: "http://localhost:8081/users/status/check",
+                url: "http://localhost:8080"+endPoint,
                 success: postInfoFromAccessToken,
                 dataType: "text"
             });
         }
-        function postInfoFromAccessToken(data, status, jqXHR) {
-            alert(data);
-        }
-        function simulateDelete(){
-            var accessToken = document.getElementById("accessToken").innerHTML;
-            $.ajax({
-                beforeSend: function (request) {
-                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-                    request.setRequestHeader("Authorization", "Bearer " + accessToken);
-                },
-                type: "DELETE",
-                url: "http://localhost:8081/users/2dba3a89-be44-4af4-adbb-7565cb0877da",
-                success: displaySimulateDeleteOutput,
-                dataType: "text"
-            });
-        }
-        function displaySimulateDeleteOutput(message) {
-            document.getElementById("simulateDeleteMessage").innerHTML = message;
+        function postInfoFromAccessToken(data) {
+            document.getElementById("fetchedData").innerHTML = data;
         }
     </script>
 </head>
@@ -125,10 +110,10 @@
 <p>Access token: <span id="accessToken"></span></p>
 <div><input type="button" value="Generate Auth Code" onclick="getAuthCode()" /></div>
 <br />
-<div><input type="button" value="Load" onclick="getInfoFromResourceServer()"/></div>
-<br/>
-<p>Message: <span id="simulateDeleteMessage"></span></p>
-<div><input type="button" value="Simulate Delete" onclick="simulateDelete()"/></div>
-
+<div>
+    <input type="text" placeholder="/end/point" id="endPointInput" />
+    <input type="button" value="Load" onclick="getInfoFromResourceServer()"/>
+</div>
+<p>Data: <pre id="fetchedData"></pre></p>
 </body>
 </html>
