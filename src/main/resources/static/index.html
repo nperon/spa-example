@@ -95,6 +95,22 @@
         function postInfoFromAccessToken(data, status, jqXHR) {
             alert(data);
         }
+        function simulateDelete(){
+            var accessToken = document.getElementById("accessToken").innerHTML;
+            $.ajax({
+                beforeSend: function (request) {
+                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+                    request.setRequestHeader("Authorization", "Bearer " + accessToken);
+                },
+                type: "DELETE",
+                url: "http://localhost:8081/users/2dba3a89-be44-4af4-adbb-7565cb0877da",
+                success: displaySimulateDeleteOutput,
+                dataType: "text"
+            });
+        }
+        function displaySimulateDeleteOutput(message) {
+            document.getElementById("simulateDeleteMessage").innerHTML = message;
+        }
     </script>
 </head>
 <body>
@@ -106,10 +122,13 @@
 <div id="codeChallengeValue"></div>
 <div><input type="button" value="Generate code challenge value" onclick="generateCodeChallenge()" /></div>
 <br />
-<div><input type="button" value="Generate Auth Code" onclick="getAuthCode()" /></div>
 <p>Access token: <span id="accessToken"></span></p>
-<br/>
+<div><input type="button" value="Generate Auth Code" onclick="getAuthCode()" /></div>
+<br />
 <div><input type="button" value="Load" onclick="getInfoFromResourceServer()"/></div>
+<br/>
+<p>Message: <span id="simulateDeleteMessage"></span></p>
+<div><input type="button" value="Simulate Delete" onclick="simulateDelete()"/></div>
 
 </body>
 </html>
