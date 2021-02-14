@@ -93,6 +93,7 @@
             });
         }
         function postInfoFromAccessToken(data, status, jqXHR) {
+            console.log(data);
             alert(data);
         }
         function simulateDelete(){
@@ -103,7 +104,7 @@
                     request.setRequestHeader("Authorization", "Bearer " + accessToken);
                 },
                 type: "DELETE",
-                url: "http://localhost:8081/users/2dba3a89-be44-4af4-adbb-7565cb0877da",
+                url: "http://localhost:8081/users/707e3113-7e45-4c4c-a796-40c7ecafd643",
                 success: displaySimulateDeleteOutput,
                 dataType: "text"
             });
